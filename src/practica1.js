@@ -72,7 +72,9 @@ MemoryGame = function (gs) {
 	}
 	this.onClick = function (card_) {
 		//estadoJuego[card_] = cartas[card_];
-		if (!cartas[card_].encontrada) {
+		console.log("pulsada " + cartas[card_].pulsada);
+		if (!cartas[card_].encontrada && !cartas[card_].pulsada) {
+			cartas[card_].click();
 			cartas[card_].flip();
 			if (carta_levantada1 === null) {
 				carta_levantada1 = cartas[card_];
@@ -96,6 +98,7 @@ MemoryGameCard = function (id) {
 	this.sprite = id;
 	this.encontrada = false;
 	this.estado = 0; //boca abajo
+	this.pulsada = false;
 
 	this.flip = function () {
 		console.log("fliiiiiiiip");
@@ -105,6 +108,9 @@ MemoryGameCard = function (id) {
 		else {
 			this.estado = 0;
 		}
+	}
+	this.click = function(){
+		this.pulsada = true;
 	}
 	this.found = function () {
 		this.encontrada = true;
