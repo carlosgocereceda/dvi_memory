@@ -19,40 +19,34 @@ MemoryGame = function (gs) {
 		"guy",
 		"zeppelin"
 	];
-	var carta_levantada1 = {
-		num: null,
-		nombre: ""
-	};
-	var carta_levantada2 = {
-		num: null,
-		nombre: ""
-	};
+	var carta_levantada1 = null;
+	var carta_levantada2 = null;
 	var estadoJuego = [];
 	this.msg = "";
 	var cartas;
 	this.servidorGrafico = gs;
-	this.loop = function(){
-		//var dt = 60 / 1000;
+	this.loop = function () {
 		console.log("fsd");
-		for(var i = 0; i < estadoJuego.length; i++){
-			gs.draw(estadoJuego[i], i);
+		for (var i = 0; i < estadoJuego.length; i++) {
+			cartas[i].draw(gs, i);
 		}
-		if(carta_levantada1.num != null && carta_levantada2.num != null){
-			if(carta_levantada1.nombre === carta_levantada2.nombre){
+		if (carta_levantada1 != null && carta_levantada2 != null) {
+			if (carta_levantada1.compareTo(carta_levantada2)) {
 				//ha acertado
+				carta_levantada1.found();
+				carta_levantada2.found();
 				gs.drawMessage("HAS ACERTADO");
 			}
-			else{
-				estadoJuego[carta_levantada1.num] = "back";
-				estadoJuego[carta_levantada2.num] = "back";
+			else {
+				carta_levantada1.flip();
+				carta_levantada2.flip();
+				gs.drawMessage("HAS FALLADO");
 			}
-			carta_levantada1.num = null;
-			carta_levantada2.num = null;
+			carta_levantada1 = null;
+			carta_levantada2 = null;
 		}
-		
-
 	}
-	
+
 	this.initGame = function () {
 		for (var i = 0; i < 16; i++) {
 			estadoJuego.push("back");
@@ -60,15 +54,15 @@ MemoryGame = function (gs) {
 		cartas = new Array(16);
 		var aux_cartas = new Array(8);
 		aux_cartas.fill(0, 0);
-		
+
 		for (var j = 0; j < 16; j++) {
 			var random = Math.floor((Math.random() * 8));
 			var insertado = false;
-			while(!insertado){
+			while (!insertado) {
 				var random = Math.floor((Math.random() * 8));
 				if (aux_cartas[random] < 2) {
 					aux_cartas[random]++;
-					cartas[j] = cards[random];
+					cartas[j] = new MemoryGameCard(cards[random]);
 					insertado = true;
 				}
 			}
@@ -77,15 +71,16 @@ MemoryGame = function (gs) {
 		setInterval(this.loop, 60);
 	}
 	this.onClick = function (card_) {
-		estadoJuego[card_] = cartas[card_];
-		if(carta_levantada1.num === null){
-			carta_levantada1.nombre = cartas[card_];
-			carta_levantada1.num = card_;
-		}
-		else{
-			if(carta_levantada2.num === null){
-				carta_levantada2.nombre = cartas[card_];
-				carta_levantada2.num = card_;
+		//estadoJuego[card_] = cartas[card_];
+		if (!cartas[card_].encontrada) {
+			cartas[card_].flip();
+			if (carta_levantada1 === null) {
+				carta_levantada1 = cartas[card_];
+			}
+			else {
+				if (carta_levantada2 === null) {
+					carta_levantada2 = cartas[card_];
+				}
 			}
 		}
 	}
@@ -100,23 +95,28 @@ MemoryGame = function (gs) {
 MemoryGameCard = function (id) {
 	this.sprite = id;
 	this.encontrada = false;
+	this.estado = 0; //boca abajo
 
-	this.flip = function(){
-
+	this.flip = function () {
+		console.log("fliiiiiiiip");
+		if (this.estado === 0) {
+			this.estado = 1;
+		}
+		else {
+			this.estado = 0;
+		}
 	}
-	this.found = function(){
+	this.found = function () {
 		this.encontrada = true;
 	}
-	this.compareTo = function(otherCard){
-		if(this.sprite === otherCard.sprite){
-			//son iguales
-		}
-		else{
-			//no son iguales
-		}
+	this.compareTo = function (otherCard) {
+		return (this.sprite === otherCard.sprite);
 	}
-	this.draw = function(gs, pos){
-		gs.draw(this.sprite, pos);
+	this.draw = function (gs, pos) {
+		if (this.estado === 0)
+			gs.draw("back", pos);
+		else
+			gs.draw(this.sprite, pos);
 	}
 
 };
