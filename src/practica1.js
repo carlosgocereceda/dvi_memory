@@ -4,7 +4,6 @@
  * que indica en qué estado se encuentra el juego
  */
 var MemoryGame = MemoryGame || {};
-
 /**
  * Constructora de MemoryGame
  */
@@ -32,7 +31,6 @@ MemoryGame = function (gs) {
 		}
 		if (carta_levantada1 != null && carta_levantada2 != null) {
 			if (carta_levantada1.compareTo(carta_levantada2)) {
-				//ha acertado
 				carta_levantada1.found();
 				carta_levantada2.found();
 				gs.drawMessage("HAS ACERTADO");
@@ -67,11 +65,9 @@ MemoryGame = function (gs) {
 				}
 			}
 		}
-		console.log(cartas);
 		setInterval(this.loop, 60);
 	}
 	this.onClick = function (card_) {
-		//estadoJuego[card_] = cartas[card_];
 		console.log("pulsada " + cartas[card_].pulsada);
 		if (!cartas[card_].encontrada && !cartas[card_].pulsada) {
 			cartas[card_].click();
@@ -101,7 +97,6 @@ MemoryGameCard = function (id) {
 	this.pulsada = false;
 
 	this.flip = function () {
-		console.log("fliiiiiiiip");
 		if (this.estado === 0) {
 			this.estado = 1;
 		}
