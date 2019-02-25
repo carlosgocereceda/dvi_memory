@@ -24,12 +24,15 @@ MemoryGame = function (gs) {
 	this.msg = "";
 	var cartas;
 	this.servidorGrafico = gs;
-	this.loop = function () {
-		console.log("fsd");
+	draw = function(){
 		for (var i = 0; i < estadoJuego.length; i++) {
 			cartas[i].draw(gs, i);
 		}
+	}
+	this.loop = function () {
+		draw();
 		if (carta_levantada1 != null && carta_levantada2 != null) {
+			console.log("aqui");
 			if (carta_levantada1.compareTo(carta_levantada2)) {
 				carta_levantada1.found();
 				carta_levantada2.found();
@@ -38,13 +41,16 @@ MemoryGame = function (gs) {
 			else {
 				carta_levantada1.flip();
 				carta_levantada2.flip();
+				carta_levantada1.pulsada = false;
+				carta_levantada2.pulsada = false;
 				gs.drawMessage("HAS FALLADO");
 			}
 			carta_levantada1 = null;
 			carta_levantada2 = null;
+
+
 		}
 	}
-
 	this.initGame = function () {
 		for (var i = 0; i < 16; i++) {
 			estadoJuego.push("back");
@@ -65,7 +71,7 @@ MemoryGame = function (gs) {
 				}
 			}
 		}
-		setInterval(this.loop, 60);
+		setInterval(this.loop, 16);
 	}
 	this.onClick = function (card_) {
 		console.log("pulsada " + cartas[card_].pulsada);
@@ -77,7 +83,10 @@ MemoryGame = function (gs) {
 			}
 			else {
 				if (carta_levantada2 === null) {
-					carta_levantada2 = cartas[card_];
+					setTimeout(function () {
+						carta_levantada2 = cartas[card_];
+					}, 1000)
+
 				}
 			}
 		}
@@ -104,7 +113,7 @@ MemoryGameCard = function (id) {
 			this.estado = 0;
 		}
 	}
-	this.click = function(){
+	this.click = function () {
 		this.pulsada = true;
 	}
 	this.found = function () {
@@ -119,5 +128,4 @@ MemoryGameCard = function (id) {
 		else
 			gs.draw(this.sprite, pos);
 	}
-
 };
