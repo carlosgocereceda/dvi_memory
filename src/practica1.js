@@ -18,6 +18,7 @@ MemoryGame = function (gs) {
 		"guy",
 		"zeppelin"
 	];
+	var procesando = false;
 	var carta_levantada1 = null;
 	var carta_levantada2 = null;
 	var estadoJuego = [];
@@ -32,7 +33,6 @@ MemoryGame = function (gs) {
 	this.loop = function () {
 		draw();
 		if (carta_levantada1 != null && carta_levantada2 != null) {
-			console.log("aqui");
 			if (carta_levantada1.compareTo(carta_levantada2)) {
 				carta_levantada1.found();
 				carta_levantada2.found();
@@ -74,22 +74,27 @@ MemoryGame = function (gs) {
 		setInterval(this.loop, 16);
 	}
 	this.onClick = function (card_) {
-		console.log("pulsada " + cartas[card_].pulsada);
-		if (!cartas[card_].encontrada && !cartas[card_].pulsada) {
-			cartas[card_].click();
-			cartas[card_].flip();
-			if (carta_levantada1 === null) {
-				carta_levantada1 = cartas[card_];
-			}
-			else {
-				if (carta_levantada2 === null) {
-					setTimeout(function () {
-						carta_levantada2 = cartas[card_];
-					}, 1000)
-
+		if(!procesando){
+			procesando = true;
+			if (!cartas[card_].encontrada && !cartas[card_].pulsada) {
+				cartas[card_].click();
+				cartas[card_].flip();
+				if (carta_levantada1 === null) {
+					carta_levantada1 = cartas[card_];
+					procesando = false;
+				}
+				else {
+					if (carta_levantada2 === null) {
+						setTimeout(function () {
+							carta_levantada2 = cartas[card_];
+							procesando = false;
+						}, 1000)
+	
+					}
 				}
 			}
 		}
+		
 	}
 };
 
@@ -128,4 +133,5 @@ MemoryGameCard = function (id) {
 		else
 			gs.draw(this.sprite, pos);
 	}
+
 };
