@@ -93,6 +93,9 @@ MemoryGame = function (gs) {
 					}
 				}
 			}
+			else{
+				procesando = false;
+			}
 		}
 		
 	}
